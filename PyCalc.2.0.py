@@ -95,5 +95,37 @@ buttonDot = app.addButton(".", clicked, 6, 0)
 button0 = app.addButton("0", clicked, 6, 1)
 buttonConvertPN = app.addButton("+/-", clicked, 6, 2)
 
+'''
+Set the widths across all the buttons
+'''
+app.setButtonWidth("MC", 4)
+app.setButtonWidth("MR", 4)
+app.setButtonWidth("M+", 4)
+app.setButtonWidth("M-", 4)
+
+app.setButtonWidth("AC", 4)
+app.setButtonWidth("%", 4)
+app.setButtonWidth("/", 4)
+app.setButtonWidth("x", 4)
+
+app.setButtonWidth("7", 4)
+app.setButtonWidth("8", 4)
+app.setButtonWidth("9", 4)
+app.setButtonWidth("-", 4)
+
+app.setButtonWidth("4", 4)
+app.setButtonWidth("5", 4)
+app.setButtonWidth("6", 4)
+app.setButtonWidth("+", 4)
+
+app.setButtonWidth("1", 4)
+app.setButtonWidth("2", 4)
+app.setButtonWidth("3", 4)
+app.setButtonWidth("=", 4)
+
+app.setButtonWidth(".", 4)
+app.setButtonWidth("0", 4)
+app.setButtonWidth("+/-", 4)
+
 # start the GUI
 app.go()
