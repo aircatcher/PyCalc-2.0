@@ -15,6 +15,11 @@ class FirstInit:
         self.opr = None
         self.resArray = []
 
+        app.setSize(210, 225)
+        app.setResizable(canResize = False)
+        app.setBg("#6A6A6A")
+        app.setFont(size = 12, family = "Arial Black", weight = "normal")
+
 calc = FirstInit()
 
 '''
@@ -22,12 +27,15 @@ Function specified for button clicks
 with it's each specific functions
 '''
 def clicked(widgets):
+    # Clear everything, not including the history*
+    # *TODO: History for storing previous results in a storage window
     if widgets == 'AC':
         calc.num1 = calc.num2 = 0
         calc.temp = 0
         calc.opr = None
         app.setEntry("Result", "", callFunction = False)
 
+    # If number 0 to 9 are pressed
     if widgets == '1' or widgets == '2' or widgets == '3' or widgets == '4' or widgets == '5' or widgets == '6' or widgets == '7' or widgets == '8' or widgets == '9' or widgets == '0':
         if app.getEntry("Result") == None:
             app.setEntry("Result", widgets, callFunction = False)
@@ -36,36 +44,43 @@ def clicked(widgets):
             strNum = str(app.getEntry("Result")) + str(widgets)
             calc.num1 = int(strNum)
             app.setEntry("Result", calc.num1, callFunction = False)
+
+        elif calc.opr == None and calc.temp != 0:
+            app.setEntry("Result", calc.temp, callFunction = False)
             
-        else:
-            if app.getEntry("Result") == '+' or app.getEntry("Result") == '-' or app.getEntry("Result") == 'x' or app.getEntry("Result") == '/':
-                 app.clearEntry("Result", callFunction = False) 
+        elif app.getEntry("Result") == '+' or app.getEntry("Result") == '-' or app.getEntry("Result") == 'x' or app.getEntry("Result") == '/':
+            app.clearEntry("Result", callFunction = False)
             strNum = str(app.getEntry("Result")) + str(widgets)
             calc.num2 = int(strNum)
             app.setEntry("Result", calc.num2, callFunction = False)
     
+    # If operators +, -, *, / are pressed
     if widgets == '+' or widgets == '-' or widgets == 'x' or widgets == '/':
         calc.opr = widgets
+        print(calc.opr)
         app.clearEntry("Result", callFunction = False)
         app.setEntry("Result", calc.opr, callFunction = False)
 
     # if widgets == '.':
 
+    # If equal (=) is pressed
     if widgets == '=':
+        # Check if there is result from previous calculation
         if calc.temp == 0:
             if calc.opr == '+':
                 result = calc.num1 + calc.num2
             if calc.opr == '-':
-                result = calc.num1 + calc.num2
+                result = calc.num1 - calc.num2
             if calc.opr == 'x':
                 result = calc.num1 * calc.num2
             if calc.opr == '/':
                 result = float(calc.num1) / float(calc.num2)
+        # If so, then use it as a replacement for num1
         else:
             if calc.opr == '+':
                 result = calc.temp + calc.num2
             if calc.opr == '-':
-                result = calc.temp + calc.num2
+                result = calc.temp - calc.num2
             if calc.opr == 'x':
                 result = calc.temp * calc.num2
             if calc.opr == '/':
@@ -73,7 +88,7 @@ def clicked(widgets):
         calc.temp = result
 
         app.clearEntry("Result", callFunction = False)
-        app.setEntry("Result", result, callFunction = False)
+        app.setEntry("Result", calc.temp, callFunction = False)
 
 '''
 Calculator Entries and Buttons
@@ -170,6 +185,14 @@ class Width():
     app.setButtonWidth("+/-", 4)
 
 width = Width()
+
+# '''
+# Set the font styles for non numerical buttons
+# '''
+# class SpecialButtonStyles():
+#     app.setFont(weight = "bold")
+
+# sbStyles = SpecialButtonStyles()
 
 '''
 Start the GUI
