@@ -12,7 +12,10 @@ class FirstInit:
     def __init__(self):
         self.num1 = self.num2 = 0
         self.temp = 0
+        self.memory = 0
+        self.result = 0
         self.opr = None
+        self.percent = None
         self.resArray = []
 
         app.setSize(210, 225)
@@ -21,6 +24,7 @@ class FirstInit:
         app.setFont(size = 12, family = "Arial Black", weight = "normal")
 
 calc = FirstInit()
+calc.memory = float(calc.memory)
 
 '''
 Function specified for button clicks
@@ -32,7 +36,9 @@ def clicked(widgets):
     if widgets == 'AC':
         calc.num1 = calc.num2 = 0
         calc.temp = 0
+        calc.result = 0
         calc.opr = None
+        calc.percent = None
         app.setEntry("Result", "", callFunction = False)
 
     # If number 0 to 9 are pressed
@@ -47,7 +53,11 @@ def clicked(widgets):
 
         elif calc.opr == None and calc.temp != 0:
             app.setEntry("Result", calc.temp, callFunction = False)
-            
+        
+        elif calc.opr != None and calc.temp != 0 and calc.percent != None:
+            app.setEntry("Result", widgets, callFunction = False)
+            calc.num2 = widgets
+
         elif app.getEntry("Result") == '+' or app.getEntry("Result") == '-' or app.getEntry("Result") == 'x' or app.getEntry("Result") == '/':
             app.clearEntry("Result", callFunction = False)
             strNum = str(app.getEntry("Result")) + str(widgets)
@@ -57,35 +67,76 @@ def clicked(widgets):
     # If operators +, -, *, / are pressed
     if widgets == '+' or widgets == '-' or widgets == 'x' or widgets == '/':
         calc.opr = widgets
-        print(calc.opr)
         app.clearEntry("Result", callFunction = False)
         app.setEntry("Result", calc.opr, callFunction = False)
+    
+    if widgets == '%':
+        if calc.percent == None:
+            calc.percent = widgets
+            if calc.opr == None and calc.temp == 0:
+                num1 = 0
+            elif calc.opr != None and calc.temp == 0:
+                num2 = num2 / 100
+                calc.result = num2
+            elif calc.opr != None and calc.temp != 0:
+                calc.temp = float(calc.temp) / 100
+                calc.result = calc.temp
 
+            app.clearEntry("Result", callFunction = False)
+            app.setEntry("Result", calc.result, callFunction = False)
+
+    # If dot (.) is pressed
     # if widgets == '.':
+
+    if widgets == 'M+':
+        if app.getEntry("Result"):
+            calc.memory += float(app.getEntry("Result"))
+    if widgets == 'M=':
+        if app.getEntry("Result"):
+            calc.memory -= app.getEntry("Result")
+
+    if calc.memory == 0:
+        app.disableButton("MC")
+        app.disableButton("MR")
+    else:
+        app.enableButton("MC")
+        app.enableButton("MR")
+        if widgets == 'MC':
+            calc.memory = 0
+            app.disableButton("MC")
+            app.disableButton("MR")
+        if widgets == 'MR':
+            app.setEntry("Result", calc.memory, callFunction = False)
 
     # If equal (=) is pressed
     if widgets == '=':
         # Check if there is result from previous calculation
-        if calc.temp == 0:
+        if calc.temp == 0 and calc.percent == None:
             if calc.opr == '+':
-                result = calc.num1 + calc.num2
+                calc.result = calc.num1 + float(calc.num2)
             if calc.opr == '-':
-                result = calc.num1 - calc.num2
+                calc.result = calc.num1 - float(calc.num2)
             if calc.opr == 'x':
-                result = calc.num1 * calc.num2
+                calc.result = calc.num1 * float(calc.num2)
             if calc.opr == '/':
-                result = float(calc.num1) / float(calc.num2)
+                calc.result = float(calc.num1) / float(calc.num2)
         # If so, then use it as a replacement for num1
-        else:
+        elif calc.temp != 0 and calc.percent == None:
             if calc.opr == '+':
-                result = calc.temp + calc.num2
+                calc.result = calc.temp + float(calc.num2)
             if calc.opr == '-':
-                result = calc.temp - calc.num2
+                calc.result = calc.temp - float(calc.num2)
             if calc.opr == 'x':
-                result = calc.temp * calc.num2
+                calc.result = calc.temp * float(calc.num2)
             if calc.opr == '/':
-                result = float(calc.temp) / float(calc.num2)
-        calc.temp = result
+                calc.result = float(calc.temp) / float(calc.num2)
+        elif calc.temp != 0 and calc.percent != None:
+            calc.result = float(calc.temp) + float(calc.num2)
+            calc.temp = 0
+            calc.percent = None
+        
+        if calc.result != None:
+            calc.temp = calc.result
 
         app.clearEntry("Result", callFunction = False)
         app.setEntry("Result", calc.temp, callFunction = False)
@@ -148,6 +199,10 @@ class Layout:
     row5()
     row6()
     row7()
+
+    if calc.memory == 0:
+        app.disableButton("MC")
+        app.disableButton("MR")
 
 layout = Layout()
 
